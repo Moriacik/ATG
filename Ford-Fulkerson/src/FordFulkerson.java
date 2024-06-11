@@ -34,7 +34,7 @@ class FordFulkerson {
         E.add(source);
 
         while (!E.isEmpty()) {
-            int r = E.remove(0); // Remove from the front of the list to maintain FIFO order
+            int r = E.remove(0);
 
             for (int j = 1; j <= g.n; j++) {
                 if (x[j] == Integer.MAX_VALUE && capacity[r][j] - flow[r][j] > 0) {
@@ -56,29 +56,29 @@ class FordFulkerson {
                 return true;
             }
         }
-
         return false;
     }
+
 
     public int fordFulkerson(int source, int destination) {
         this.source = source;
         this.destination = destination;
 
         while (bfs(source, destination)) {
-            int pathFlow = Integer.MAX_VALUE;
+            int r = Integer.MAX_VALUE;
 
             for (int v = destination; v != source; v = parent[v]) {
                 int u = parent[v];
-                pathFlow = Math.min(pathFlow, capacity[u][v] - flow[u][v]);
+                r = Math.min(r, capacity[u][v] - flow[u][v]);
             }
 
             for (int v = destination; v != source; v = parent[v]) {
                 int u = parent[v];
-                flow[u][v] += pathFlow;
-                flow[v][u] -= pathFlow;
+                flow[u][v] += r;
+                flow[v][u] -= r;
             }
 
-            maxFlow += pathFlow;
+            maxFlow += r;
         }
         return maxFlow;
     }
@@ -87,9 +87,8 @@ class FordFulkerson {
         System.out.println("\nTok na jednotlivých hranách:");
         for (int u = 1; u <= g.n; u++) {
             for (int v = 1; v <= g.n; v++) {
-                if (flow[u][v] > 0) {
                     System.out.println(u + " -> " + v + ": " + flow[u][v]);
-                }
+
             }
         }
 

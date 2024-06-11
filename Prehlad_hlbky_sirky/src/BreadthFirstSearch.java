@@ -2,10 +2,11 @@ import java.util.*;
 
 public class BreadthFirstSearch {
     Graf graf;
-    List<Integer> T = new ArrayList<>();
+    int[][] T;
 
     public BreadthFirstSearch(Graf graf) {
         this.graf = graf;
+        T = new int[graf.n - 1][2];
     }
 
     public void minimalSpanningTree(int source) {
@@ -26,14 +27,22 @@ public class BreadthFirstSearch {
                 int u = graf.H[i][0];
                 int v = graf.H[i][1];
 
-                if ((u == current || v == current) && ((!inTree[u] && p[u] == 0) || (!inTree[v] && p[v] == 0))) {
-                    int next = (u == current) ? v : u;
-                    T.add(current);
-                    T.add(next);
+                if (u == current && !inTree[v]) {
+                    T[k - 1][0] = u;
+                    T[k - 1][1] = v;
+
                     k++;
-                    p[next] = k;
-                    inTree[next] = true;
-                    queue.add(next);
+                    p[v] = k;
+                    inTree[v] = true;
+                    queue.add(v);
+                } else if (v == current && !inTree[u]) {
+                    T[k - 1][0] = v;
+                    T[k - 1][1] = u;
+
+                    k++;
+                    p[u] = k;
+                    inTree[u] = true;
+                    queue.add(u);
                 }
             }
         }
@@ -41,8 +50,10 @@ public class BreadthFirstSearch {
 
     public void printInfo() {
         System.out.println("\nMinimálny strom (prehladavanie do šírky):");
-        for (int i = 0; i < T.size(); i += 2) {
-            System.out.print("{" + T.get(i) + "," + T.get(i + 1) + "}, ");
+        for (int i = 0; i < T.length; i++) {
+            if (T[i][0] != 0 && T[i][1] != 0) {
+                System.out.print("{" + T[i][0] + "," + T[i][1] + "}, ");
+            }
         }
     }
 }

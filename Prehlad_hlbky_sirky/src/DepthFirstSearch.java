@@ -6,21 +6,22 @@ public class DepthFirstSearch {
 
     public DepthFirstSearch(Graf graf) {
         this.graf = graf;
+        T = new int[graf.n - 1][2];
     }
 
     public void maximalSpanningTree(int source) {
         boolean[] inTree = new boolean[graf.n + 1];
-        ArrayList<Integer> stack = new ArrayList<>();
+        ArrayList<Integer> queue = new ArrayList<>();
 
         int[] p = new int[graf.n + 1];
         p[source] = 1;
         int k = 1;
 
-        stack.add(source);
+        queue.add(source);
         inTree[source] = true;
 
-        while (!stack.isEmpty()) {
-            int current = stack.get(stack.size() - 1);
+        while (!queue.isEmpty()) {
+            int current = queue.get(queue.size() - 1);
             boolean found = false;
 
             for (int i = 1; i <= graf.m; i++) {
@@ -28,23 +29,30 @@ public class DepthFirstSearch {
                 int v = graf.H[i][1];
 
                 if (u == current && !inTree[v]) {
-                    if (T == null) {
-                        T = new int[graf.n - 1][2];
-                    }
                     T[k - 1][0] = u;
                     T[k - 1][1] = v;
 
                     k++;
                     p[v] = k;
                     inTree[v] = true;
-                    stack.add(v);
+                    queue.add(v);
+                    found = true;
+                    break;
+                } else if (v == current && !inTree[u]) {
+                    T[k - 1][0] = v;
+                    T[k - 1][1] = u;
+
+                    k++;
+                    p[u] = k;
+                    inTree[u] = true;
+                    queue.add(u);
                     found = true;
                     break;
                 }
             }
 
             if (!found) {
-                stack.removeLast();
+                queue.remove(queue.size() - 1);
             }
         }
     }
