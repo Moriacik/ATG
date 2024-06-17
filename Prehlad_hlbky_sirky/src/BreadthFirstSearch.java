@@ -21,13 +21,21 @@ public class BreadthFirstSearch {
         inTree[source] = true;
 
         while (!queue.isEmpty()) {
-            int current = queue.removeFirst();
+            int current = queue.getFirst();
+            boolean found = false;
 
             for (int i = 1; i <= graf.m; i++) {
                 int u = graf.H[i][0];
                 int v = graf.H[i][1];
+                int minP = Integer.MAX_VALUE;
 
-                if (u == current && !inTree[v]) {
+                for (int y = 1; y <= graf.n; y++) {
+                    if (inTree[y] && p[y] < minP && p[y] != 0) {
+                        Math.min(minP,p[y]);
+                    }
+                }
+
+                if (u == current && !inTree[v] && p[u] <= minP) {
                     T[k - 1][0] = u;
                     T[k - 1][1] = v;
 
@@ -35,7 +43,9 @@ public class BreadthFirstSearch {
                     p[v] = k;
                     inTree[v] = true;
                     queue.add(v);
-                } else if (v == current && !inTree[u]) {
+                    found = true;
+                    break;
+                } else if (v == current && !inTree[u] && p[v] <= minP) {
                     T[k - 1][0] = v;
                     T[k - 1][1] = u;
 
@@ -43,7 +53,12 @@ public class BreadthFirstSearch {
                     p[u] = k;
                     inTree[u] = true;
                     queue.add(u);
+                    found = true;
+                    break;
                 }
+            }
+            if (!found) {
+                queue.removeFirst();
             }
         }
     }
